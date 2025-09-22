@@ -1,10 +1,11 @@
 import requests
 from bs4 import BeautifulSoup
 
-url_weather = 'https://yandex.ru/pogoda/ru?lat=55.84537506&lon=37.3658371'
+
 url_currency = 'https://www.cbr.ru/currency_base/daily/'
 
-def get_weather():
+def get_weather(city):
+    url_weather = 'https://yandex.ru/pogoda/ru' + city.lower()
     try:
         response = requests.get(url_weather)
         response.raise_for_status()
@@ -25,7 +26,8 @@ def get_weather():
         print('Один или несколько элементов парсинга не найдены')
         return 'Элемент не найден'
 
-def get_currency():
+
+def get_currency(cur):
     try:
         headers = {"User-Agent": "Mozilla/5.0"}
         response = requests.get(url_currency, headers=headers)
@@ -40,10 +42,6 @@ def get_currency():
     rows = soup.find_all('tr')
     for row in rows:
         cols = row.find_all('td')
-        if cols and cols[1].text.strip() == 'USD':
-            USD = f"Валюта: {cols[1].text.strip()} \nНоминал: {cols[2].text.strip()} \nНазвание: {cols[3].text.strip()} \nКурс: {cols[4].text.strip()}"
-        if cols and cols[1].text.strip() == 'EUR':
-            EUR = f"Валюта: {cols[1].text.strip()} \nНоминал: {cols[2].text.strip()} \nНазвание: {cols[3].text.strip()} \nКурс: {cols[4].text.strip()}"
-
-    data = USD + '\n\n' + EUR
-    return data
+        if cols and cols[1].text.strip() == cur:
+            data = f"Валюта: {cols[1].text.strip()} \nНоминал: {cols[2].text.strip()} \nНазвание: {cols[3].text.strip()} \nКурс: {cols[4].text.strip()}"
+            return data

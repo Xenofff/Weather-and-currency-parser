@@ -11,12 +11,17 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=chat_id, text=text_to_send)
 
 async def get_data_weather(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    parsed_data = get_weather()
+    city = context.args[0]
+    parsed_data = get_weather(city)
     await update.message.reply_text(f'Вот погода на текущий момент: \n{parsed_data}')
 
 async def get_data_currency(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    parsed_data = get_currency()
-    await update.message.reply_text(f"Вот курсы валют на текущий момент: \n{parsed_data}")
+    code = context.args[0]
+    parsed_data = get_currency(code)
+    if parsed_data:
+        await update.message.reply_text(f"Вот курс {code} на текущий момент: \n{parsed_data}")
+    else:
+        await update.message.reply_text(f'Не удалось найти курс для валюты {code}')
 
 def main():
     print('Запуск...')
