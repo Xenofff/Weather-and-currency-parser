@@ -1,7 +1,7 @@
 from telegram import Update
 from telegram.ext import ContextTypes, Application, CommandHandler
 
-from parser import get_weather_new, get_currency
+from parser import get_weather_new, get_currency, get_currency_all
 
 BOT_TOKEN = '8401888617:AAHgdeuaOTpHhbSP9uACsE6P7Pzv-E_L544'
 
@@ -26,6 +26,15 @@ async def get_data_currency(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await update.message.reply_text(f'Не удалось найти курс для валюты {code}')
 
+async def get_data_currency_all(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    parsed_data = get_currency_all()
+    if parsed_data:
+        await update.message.reply_text(parsed_data)
+    else:
+        await update.message.reply_text(f'Не удалось найти курс валют')
+
+
+
 def main():
     print('Запуск...')
     application = Application.builder().token(BOT_TOKEN).build()
@@ -33,6 +42,7 @@ def main():
     application.add_handler(CommandHandler('start', start_command))
     application.add_handler(CommandHandler('weather', get_data_weather))
     application.add_handler(CommandHandler('currency', get_data_currency))
+    application.add_handler(CommandHandler('currency_all', get_data_currency_all))
 
     application.run_polling()
     print('Бот остановлен')
@@ -40,4 +50,3 @@ def main():
 if __name__ == '__main__':
     main()
 
-#sdgsdgsdgsdgsdgsdgsdg

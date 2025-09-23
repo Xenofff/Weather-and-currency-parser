@@ -38,3 +38,33 @@ def get_currency(cur):
         if cols and cols[1].text.strip() == cur:
             data = f"Валюта: {cols[1].text.strip()} \nНоминал: {cols[2].text.strip()} \nНазвание: {cols[3].text.strip()} \nКурс: {cols[4].text.strip()}"
             return data
+
+
+def get_currency_all():
+    try:
+        headers = {"User-Agent": "Mozilla/5.0"}
+        response = requests.get(url_currency, headers=headers)
+        response.raise_for_status()
+        html_response = response.text
+    except requests.exceptions.RequestException as e:
+        print(f'Ошибка при запросе: {e}')
+        return 'Не удалось получить данные о курс валют'
+
+    soup = BeautifulSoup(html_response, 'html.parser')
+    rows = soup.find_all('tr')
+    data = ''
+    for row in rows:
+        cols = row.find_all('td')
+        if cols and cols[1].text.strip() == 'USD':
+            data += f"Валюта: {cols[1].text.strip()} \nНоминал: {cols[2].text.strip()} \nНазвание: {cols[3].text.strip()} \nКурс: {cols[4].text.strip()} \n"
+            data += '-' * 15 + '\n'
+    for row in rows:
+        cols = row.find_all('td')
+        if cols and cols[1].text.strip() == 'EUR':
+            data += f"Валюта: {cols[1].text.strip()} \nНоминал: {cols[2].text.strip()} \nНазвание: {cols[3].text.strip()} \nКурс: {cols[4].text.strip()} \n"
+            data += '-' * 15 + '\n'
+    for row in rows:
+        cols = row.find_all('td')
+        if cols and cols[1].text.strip() == 'BYN':
+            data += f"Валюта: {cols[1].text.strip()} \nНоминал: {cols[2].text.strip()} \nНазвание: {cols[3].text.strip()} \nКурс: {cols[4].text.strip()} \n"
+    return data
