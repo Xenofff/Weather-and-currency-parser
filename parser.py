@@ -3,28 +3,21 @@ from bs4 import BeautifulSoup
 
 
 url_currency = 'https://www.cbr.ru/currency_base/daily/'
+api_key = 'a2d371551130439786c190020252309'
 
-def get_weather(city):
-    url_weather = 'https://yandex.ru/pogoda/ru' + city.lower()
+def get_weather_new(city):
+
+    url = 'http://api.weatherapi.com/v1/current.json'
+    params = {'key': api_key, 'q': city}
     try:
-        response = requests.get(url_weather)
-        response.raise_for_status()
-        html_response = response.text
+        response = requests.get(url, params=params)
+        data = response.json()
+        if 'error' in data:
+            return "Error 0x0000001337"
+        else:
+            return f'Температура: {data['current']['temp_c']} \nСостояние погоды: {data['current']['condition']['text']} \nОщущается как: {data['current']['feelslike_c']} \nГород: {data['location']['name']}'
     except requests.exceptions.RequestException as e:
-        print(f'Ошибка при запросе: {e}')
-        return 'Не удалось получить данные о погоде.'
-
-    soup = BeautifulSoup(html_response, 'html.parser')
-    degree = soup.find('p', class_='AppFactTemperature_content__Lx4p9')
-    weather = soup.find('p', class_='AppFact_warning__8kUUn')
-    feeling = soup.find('span', class_='AppFact_feels__IJoel AppFact_feels_withYesterday__yE440')
-
-    if degree and weather and feeling:
-        extracted_data = f"{degree.text} {weather.text} \n{feeling.text}"
-        return extracted_data
-    else:
-        print('Один или несколько элементов парсинга не найдены')
-        return 'Элемент не найден'
+        return f"Error: {e}"
 
 
 def get_currency(cur):

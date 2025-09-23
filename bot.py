@@ -1,7 +1,7 @@
 from telegram import Update
 from telegram.ext import ContextTypes, Application, CommandHandler
 
-from parser import get_weather, get_currency
+from parser import get_weather_new, get_currency
 
 BOT_TOKEN = '8401888617:AAHgdeuaOTpHhbSP9uACsE6P7Pzv-E_L544'
 
@@ -11,8 +11,11 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=chat_id, text=text_to_send)
 
 async def get_data_weather(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not context.args:
+        await update.message.reply_text("Пожалуйста, укажите город. Например, /weather Moscow")
+        return
     city = context.args[0]
-    parsed_data = get_weather(city)
+    parsed_data = get_weather_new(city)
     await update.message.reply_text(f'Вот погода на текущий момент: \n{parsed_data}')
 
 async def get_data_currency(update: Update, context: ContextTypes.DEFAULT_TYPE):
