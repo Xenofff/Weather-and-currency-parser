@@ -58,13 +58,10 @@ def get_currency_all():
         if cols and cols[1].text.strip() == 'USD':
             data += f"Валюта: {cols[1].text.strip()} \nНоминал: {cols[2].text.strip()} \nНазвание: {cols[3].text.strip()} \nКурс: {cols[4].text.strip()} \n"
             data += '-' * 15 + '\n'
-    for row in rows:
-        cols = row.find_all('td')
-        if cols and cols[1].text.strip() == 'EUR':
+        elif cols and cols[1].text.strip() == 'EUR':
             data += f"Валюта: {cols[1].text.strip()} \nНоминал: {cols[2].text.strip()} \nНазвание: {cols[3].text.strip()} \nКурс: {cols[4].text.strip()} \n"
             data += '-' * 15 + '\n'
-    for row in rows:
-        cols = row.find_all('td')
-        if cols and cols[1].text.strip() == 'BYN':
+        elif cols and cols[1].text.strip() == 'BYN':
             data += f"Валюта: {cols[1].text.strip()} \nНоминал: {cols[2].text.strip()} \nНазвание: {cols[3].text.strip()} \nКурс: {cols[4].text.strip()} \n"
+
     return data
