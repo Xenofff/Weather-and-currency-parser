@@ -9,7 +9,6 @@ API_KEY = os.getenv("API_KEY")
 
 url_currency = 'https://www.cbr.ru/currency_base/daily/'
 
-
 def get_weather_new(city):
 
     url = 'http://api.weatherapi.com/v1/current.json'
@@ -23,7 +22,6 @@ def get_weather_new(city):
             return f'Температура: {data['current']['temp_c']} \nСостояние погоды: {data['current']['condition']['text']} \nОщущается как: {data['current']['feelslike_c']} \nГород: {data['location']['name']}'
     except requests.exceptions.RequestException as e:
         return f"Error: {e}"
-
 
 def get_currency(cur):
     try:
@@ -43,7 +41,6 @@ def get_currency(cur):
         if cols and cols[1].text.strip() == cur:
             data = f"Валюта: {cols[1].text.strip()} \nНоминал: {cols[2].text.strip()} \nНазвание: {cols[3].text.strip()} \nКурс: {cols[4].text.strip()}"
             return data
-
 
 def get_currency_all():
     try:

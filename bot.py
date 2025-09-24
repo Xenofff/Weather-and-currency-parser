@@ -36,7 +36,6 @@ async def get_data_currency_all(update: Update, context: ContextTypes.DEFAULT_TY
         await update.message.reply_text(f'Не удалось найти курс валют')
 
 
-
 def main():
     print('Запуск...')
     application = Application.builder().token(BOT_TOKEN).build()
