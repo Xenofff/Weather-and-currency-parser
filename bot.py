@@ -1,9 +1,11 @@
+import os
+
 from telegram import Update
 from telegram.ext import ContextTypes, Application, CommandHandler
 
 from parser import get_weather_new, get_currency, get_currency_all
 
-BOT_TOKEN = '8401888617:AAHgdeuaOTpHhbSP9uACsE6P7Pzv-E_L544'
+BOT_TOKEN = os.getenv('BOT_TOKEN')
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.message.chat_id

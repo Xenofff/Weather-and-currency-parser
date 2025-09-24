@@ -1,14 +1,19 @@
 import requests
 from bs4 import BeautifulSoup
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
+
+API_KEY = os.getenv("API_KEY")
 
 url_currency = 'https://www.cbr.ru/currency_base/daily/'
-api_key = 'a2d371551130439786c190020252309'
+
 
 def get_weather_new(city):
 
     url = 'http://api.weatherapi.com/v1/current.json'
-    params = {'key': api_key, 'q': city}
+    params = {'key': API_KEY, 'q': city}
     try:
         response = requests.get(url, params=params)
         data = response.json()
@@ -52,16 +57,28 @@ def get_currency_all():
 
     soup = BeautifulSoup(html_response, 'html.parser')
     rows = soup.find_all('tr')
-    data = ''
+    currency_data = {}
     for row in rows:
         cols = row.find_all('td')
-        if cols and cols[1].text.strip() == 'USD':
-            data += f"Валюта: {cols[1].text.strip()} \nНоминал: {cols[2].text.strip()} \nНазвание: {cols[3].text.strip()} \nКурс: {cols[4].text.strip()} \n"
-            data += '-' * 15 + '\n'
-        elif cols and cols[1].text.strip() == 'EUR':
-            data += f"Валюта: {cols[1].text.strip()} \nНоминал: {cols[2].text.strip()} \nНазвание: {cols[3].text.strip()} \nКурс: {cols[4].text.strip()} \n"
-            data += '-' * 15 + '\n'
-        elif cols and cols[1].text.strip() == 'BYN':
-            data += f"Валюта: {cols[1].text.strip()} \nНоминал: {cols[2].text.strip()} \nНазвание: {cols[3].text.strip()} \nКурс: {cols[4].text.strip()} \n"
+        if cols:
+            currency_code = cols[1].text.strip()
+            if currency_code in ['USD', 'EUR', 'BYN']:
+                currency_data[currency_code] = {
+                    'Номинал': cols[2].text.strip(),
+                    'Название': cols[3].text.strip(),
+                    'Курс': cols[4].text.strip(),
+                }
 
-    return data
+    output = ''
+    order = ['USD', 'EUR', 'BYN']
+
+    for code in order:
+        if code in currency_data:
+            info = currency_data[code]
+            output += f"Валюта: {code}\n"
+            output += f"Номинал: {info['Номинал']}\n"
+            output += f"Название: {info['Название']}\n"
+            output += f"Курс: {info['Курс']}\n"
+            output += '-' * 15 + '\n'
+
+    return output
